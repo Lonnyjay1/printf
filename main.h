@@ -28,6 +28,5 @@ int str_addhexa_x(unsigned int n, char *p, int k);
 int str_addhexa_X(unsigned int n, char *p, int k);
 int str_octa(unsigned int n, char *p, int k);
 int (*get_formatter(char *s))(unsigned int n, char *p, int k);
-int print_buff(char *p, int k);
 
 #endif

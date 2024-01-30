@@ -20,8 +20,6 @@ int _printf(const char *format, ...)
 		return (-1);
 	for (i = 0; *f; f++, i++)
 	{
-		if (i == 1024)
-			print_buff(p, i);
 		if (*f != '%')
 			p[i] = *f;
 		else
@@ -31,13 +29,13 @@ int _printf(const char *format, ...)
 				p[i] = *f;
 			else
 			{
-				i = format_handler(f, ap, p, i);
+				i += format_handler(f, ap, p, i);
 				i--;
 			}
 		}
 		va_end(ap);
 	}
-	print_buff(p, i);
+	write(1, p, i);
 	return (i);
 }
 
@@ -66,7 +64,7 @@ int format_handler(char *f, va_list ap, char *p, int k)
 		case 'c':
 			c = va_arg(ap, int);
 			p[k + i] = c;
-			i = k + 1;
+			i = 1;
 			break;
 		case 'i':
 		case 'd':
@@ -102,20 +100,17 @@ int str_len(char *s, char *p, int k)
 
 	if (s == NULL)
 	{
-		if ((k + count) == 1024)
-			k = print_buff(p, (k + count));
 		for (count = 0; nill[count]; count++)
 			p[k + count] = nill[count];
 		return (6);
 	}
+
 	while (*(s + count) != '\0')
 	{
-		if ((k + count) == 1024)
-			k = print_buff(p, (k + count));
 		p[k + count] = s[count];
 		count++;
 	}
-	return (k + count);
+	return (count);
 }
 
 /**
@@ -149,11 +144,9 @@ int str_addint(int n, char *p, int k)
 	}
 	for (; count >= 1; count /= 10, i++)
 	{
-		if ((k + i) == 1024)
-			k = print_buff(p, (k + i));
 		p[k + i] = (((m / count) % 10) + '0');
 	}
-	return (k + i);
+	return (i);
 }
 
 /**
@@ -177,10 +170,6 @@ int str_addbit(unsigned int n, char *p, int k)
 		count *= 2;
 	}
 	for (; count >= 1; count /= 2, i++)
-	{
-		if ((k + i) == 1024)
-			k = print_buff(p, (k + (int)i));
 		p[k + i] = (((n / count) % 2) + '0');
-	}
-	return (k + (int) i);
+	return ((int) i);
 }
