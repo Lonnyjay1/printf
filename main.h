@@ -1,23 +1,32 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef _MAIN_H_
+#define _MAIN_H_
+
+#include <stdlib.h>
 #include <stdarg.h>
-#include <stdio.h>
-#include <unistd.h>
+
+#define BUFFSIZE 1024
+
 /**
- * Prototype -Prototype
- * @f: function
- * @value: the value of character
+ * struct formatter - Struct op
  *
+ * @op: The operator
+ * @f: The function associated
  */
+typedef struct formatter
+{
+	char *op;
+	int (*f)(unsigned int n, char *p, int k);
+} formatter_t;
 
 int _printf(const char *format, ...);
-int str_addunsignedint_all(unsigned int n, char *p, int k)
-int(*get_formatter(char *s))(unsigned int n, char *p, int k)
-int str_addhexa_x_all(unsigned int n, char *p, int k)
-int print_all(const char * const format, ...)`int print_all(const char * const format, ...)
-int format_handler(char *f, va_list ap)	
-	int _putchar(char c);
-	int str_addint(int n)
-	int str_len(char *s)
+int format_handler(char *f, va_list ap, char *p, int k);
+int str_len(char *s, char *p, int k);
+int str_addint(int n, char *p, int k);
+int str_addbit(unsigned int n, char *p, int k);
+int str_addunsignedint(unsigned int n, char *p, int k);
+int str_addhexa_x(unsigned int n, char *p, int k);
+int str_addhexa_X(unsigned int n, char *p, int k);
+int str_octa(unsigned int n, char *p, int k);
+int (*get_formatter(char *s))(unsigned int n, char *p, int k);
 
 #endif
