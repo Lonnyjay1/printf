@@ -96,6 +96,14 @@ int format_handler(char *f, va_list ap, char *p, int k)
 int str_len(char *s, char *p, int k)
 {
 	int count = 0;
+	char nill[] = "(null)";
+
+	if (s == NULL)
+	{
+		for (count = 0; nill[count]; count++)
+			p[k + count] = nill[count];
+		return (6);
+	}
 
 	while (*(s + count) != '\0')
 	{
