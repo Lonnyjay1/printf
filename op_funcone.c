@@ -25,7 +25,7 @@ int str_addunsignedint(unsigned int n, char *p, int k)
 
 	for (; count >= 1; count /= 10, i++)
 		p[k + i] = (((n / count) % 10) + '0');
-	return (i);
+	return (k + i);
 }
 
 /**
@@ -60,7 +60,7 @@ int str_addhexa_x(unsigned int n, char *p, int k)
 			m += '0';
 		p[k + i] = m;
 	}
-	return (i);
+	return (k + i);
 }
 
 /**
@@ -95,7 +95,7 @@ int str_addhexa_X(unsigned int n, char *p, int k)
 			m += '0';
 		p[k + i] = m;
 	}
-	return (i);
+	return (k + i);
 }
 
 /**
@@ -127,5 +127,20 @@ int str_octa(unsigned int n, char *p, int k)
 		m += '0';
 		p[k + i] = m;
 	}
-	return (i);
+	return (k + i);
+}
+
+/**
+ * print_buff - returns the length of a string.
+ * @p: First operand.
+ * @k: Second operand.
+ *
+ * Return: length of a string.
+ */
+
+int print_buff(char *p, int k)
+{
+	write(1, p, k);
+	k = 0;
+	return (k);
 }
