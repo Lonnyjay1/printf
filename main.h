@@ -21,7 +21,7 @@ typedef struct formatter
 int _printf(const char *format, ...);
 int format_handler(char *f, va_list ap, char *p, int k);
 int str_len(char *s, char *p, int k);
-int str_addint(int n, char *p, int k);
+int str_addint(long int n, char *p, int k);
 int str_addbit(unsigned int n, char *p, int k);
 int str_addunsignedint(unsigned int n, char *p, int k);
 int str_addhexa_x(unsigned int n, char *p, int k);

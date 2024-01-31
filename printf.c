@@ -68,7 +68,7 @@ int format_handler(char *f, va_list ap, char *p, int k)
 			break;
 		case 'i':
 		case 'd':
-			i = va_arg(ap, int);
+			i = va_arg(ap, long int);
 			i = str_addint(i, p, k);
 			break;
 		case 'b':
@@ -121,9 +121,10 @@ int str_len(char *s, char *p, int k)
  *
  * Return: length of a string.
  */
-int str_addint(int n, char *p, int k)
+int str_addint(long int n, char *p, int k)
 {
-	int m, d, count, i = 0;
+	long int m;
+	int d, count, i = 0;
 
 	if (n < 0)
 	{
