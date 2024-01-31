@@ -21,7 +21,14 @@ int _printf(const char *format, ...)
 	for (i = 0; *f; f++, i++)
 	{
 		if (*f != '%')
+		{
 			p[i] = *f;
+			if (i == (BUFFSIZE - 300))
+			{
+				write(1, p, i);
+				i = 0;
+			}
+		}
 		else
 		{
 			f++;
