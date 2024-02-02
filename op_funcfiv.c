@@ -1,3 +1,5 @@
+#include "main.h"
+
 /**
  * prinnupx - prints number in uppercase hex
  * @arguments: input string
