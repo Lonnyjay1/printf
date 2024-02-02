@@ -47,137 +47,126 @@ int _printf(const char *format, ...)
 }
 
 /**
- * format_handler- Entry point
- * Description: 'the program's description'
- * @f: First operand
- * @ap: Second operand
- * @p: Third operand
- * @k: Fourth operand
- *
- * Return: A pointer of type char
+ * print_chr - writes the character c to stdout
+ * @arguments: input char
+ * @buf: buffer pointer
+ * @ibuf: index for buffer pointer
+ * Return: On success 1.
  */
-int format_handler(char *f, va_list ap, char *p, int k)
+int print_chr(va_list arguments, char *buf, unsigned int ibuf)
 {
-	int i = 0;
-	char *n, c;
-	unsigned int j;
+	char c;
 
-	switch (*f)
-	{
-		case 's':
-			n = va_arg(ap, char *);
-			i = str_len(n, p, k);
-			break;
-		case 'c':
-			c = va_arg(ap, int);
-			p[k + i] = c;
-			i = 1;
-			break;
-		case 'i':
-		case 'd':
-			i = va_arg(ap, long int);
-			i = str_addint(i, p, k);
-			break;
-		case 'b':
-		case 'u':
-		case 'x':
-		case 'X':
-		case 'o':
-			j = va_arg(ap, unsigned int);
-			i = (get_formatter(f)(j, p, k));
-			break;
-		default:
-			break;
-	}
-	return (i);
+	c = va_arg(arguments, int);
+	handl_buf(buf, c, ibuf);
+
+	return (1);
 }
 
 /**
- * str_len - returns the length of a string.
- * @s: First operand.
- * @p: Second operand.
- * @k: Third operand.
- *
- * Return: length of a string.
+ * print_str - writes the string to stdout
+ * @arguments: input string
+ * @buf: buffer pointer
+ * @ibuf: index for buffer pointer
+ * Return: On success 1.
  */
-int str_len(char *s, char *p, int k)
+int print_str(va_list arguments, char *buf, unsigned int ibuf)
 {
-	int count = 0;
+	char *str;
+	unsigned int i;
 	char nill[] = "(null)";
 
-	if (s == NULL)
+	str = va_arg(arguments, char *);
+	if (str == NULL)
 	{
-		for (count = 0; nill[count]; count++)
-			p[k + count] = nill[count];
+		for (i = 0; nill[i]; i++)
+			ibuf = handl_buf(buf, nill[i], ibuf);
 		return (6);
 	}
-
-	while (*(s + count) != '\0')
-	{
-		p[k + count] = s[count];
-		count++;
-	}
-	return (count);
-}
-
-/**
- * str_addint - returns the length of a string.
- * @n: First operand.
- * @p: Second operand.
- * @k: Third operand.
- *
- * Return: length of a string.
- */
-int str_addint(long int n, char *p, int k)
-{
-	long int m;
-	int d, count, i = 0;
-
-	if (n < 0)
-	{
-		p[k + i] = '-';
-		m = n * -1;
-		i++;
-	}
-	else
-		m = n;
-
-	d = m;
-	count = 1;
-
-	while (d > 9)
-	{
-		d /= 10;
-		count *= 10;
-	}
-	for (; count >= 1; count /= 10, i++)
-	{
-		p[k + i] = (((m / count) % 10) + '0');
-	}
+	for (i = 0; str[i]; i++)
+		ibuf = handl_buf(buf, str[i], ibuf);
 	return (i);
 }
 
 /**
- * str_addbit - returns the length of a string.
- * @n: First operand.
- * @p: Second operand.
- * @k: Third operand.
- *
- * Return: length of a string.
+ * print_int - prints an integer
+ * @arguments: input string
+ * @buf: buffer pointer
+ * @ibuf: index for buffer pointer
+ * Return: number of chars printed.
  */
-
-int str_addbit(unsigned int n, char *p, int k)
+int print_int(va_list arguments, char *buf, unsigned int ibuf)
 {
-	unsigned int d, count, i = 0;
+	int int_input;
+	unsigned int int_in, int_temp, i, div, isneg;
 
-	d = n;
-	count = 1;
-	while (d > 1)
+	int_input = va_arg(arguments, int);
+	isneg = 0;
+	if (int_input < 0)
 	{
-		d /= 2;
-		count *= 2;
+		int_in = int_input * -1;
+		ibuf = handl_buf(buf, '-', ibuf);
+		isneg = 1;
 	}
-	for (; count >= 1; count /= 2, i++)
-		p[k + i] = (((n / count) % 2) + '0');
-	return ((int) i);
+	else
+	{
+		int_in = int_input;
+	}
+
+	int_temp = int_in;
+	div = 1;
+
+	while (int_temp > 9)
+	{
+		div *= 10;
+		int_temp /= 10;
+	}
+
+	for (i = 0; div > 0; div /= 10, i++)
+	{
+		ibuf = handl_buf(buf, ((int_in / div) % 10) + '0', ibuf);
+	}
+	return (i + isneg);
+}
+
+
+/**
+ * print_bnr - prints decimal in binary
+ * @arguments: input string
+ * @buf: buffer pointer
+ * @ibuf: index for buffer pointer
+ * Return: number of chars printed.
+ */
+int print_bnr(va_list arguments, char *buf, unsigned int ibuf)
+{
+	int int_input, count, i, first_one, isnegative;
+	char *binary;
+
+	int_input = va_arg(arguments, int);
+	isnegative = 0;
+	if (int_input == 0)
+	{
+		ibuf = handl_buf(buf, '0', ibuf);
+		return (1);
+	}
+	if (int_input < 0)
+	{
+		int_input = (int_input * -1) - 1;
+		isnegative = 1;
+	}
+	binary = malloc(sizeof(char) * (32 + 1));
+	binary = fill_binary_array(binary, int_input, isnegative, 32);
+	first_one = 0;
+	for (count = i = 0; binary[i]; i++)
+	{
+		if (first_one == 0 && binary[i] == '1')
+			first_one = 1;
+		if (first_one == 1)
+		{
+			ibuf = handl_buf(buf, binary[i], ibuf);
+			count++;
+		}
+	}
+	free(binary);
+	return (count);
 }
